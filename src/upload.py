@@ -44,29 +44,41 @@ def lista_oggetti():
     risposta = s3.list_objects_v2(Bucket=BUCKET)
     for obj in risposta.get("Contents", []):
         size_kb = obj["Size"] / 1024
-        print(f"  {obj['Key']}")
-        print(f"    size: {size_kb:.1f} KB  |  last-modified: {obj['LastModified']}")
+        # Metadati dettagliati tramite head_object
+        head = s3.head_object(Bucket=BUCKET, Key=obj["Key"])
+        print(f"  KEY:           {obj['Key']}")
+        print(f"  size:          {size_kb:.1f} KB")
+        print(f"  last-modified: {obj['LastModified']}")
+        print(f"  content-type:  {head['ContentType']}")
+        print(f"  etag:          {head['ETag']}")
+        print()
 
-# ── 4. Download e analisi ───────────────────────────────────────────────────
+# ── 4. Download, testata e analisi ──────────────────────────────────────────
 def analisi():
-    print("\n── Analisi: popolazione comuni ─────────────────────────────────")
-    key = "2025/open-data/POSAS_it_Comuni.csv"
-    local = "/tmp/comuni_download.csv"
-    s3.download_file(BUCKET, key, local)
-    print(f"[DOWNLOAD] s3://{BUCKET}/{key} → {local}")
+    # ── Dataset 1: Popolazione comuni ───────────────────────────────────────
+    print("\n── Dataset 1: POSAS_it_Comuni.csv ──────────────────────────────")
+    key1  = "2025/open-data/POSAS_it_Comuni.csv"
+    local1 = "/tmp/comuni_download.csv"
+    s3.download_file(BUCKET, key1, local1)
+    print(f"[DOWNLOAD] s3://{BUCKET}/{key1} → {local1}")
 
-    df = pd.read_csv(local, sep=";", encoding="utf-8-sig")
-    print(f"\nColonne: {list(df.columns)}")
-    print(f"Righe:   {len(df)}")
+    df1 = pd.read_csv(local1, sep=";", encoding="utf-8-sig")
+    print(f"\nColonne: {list(df1.columns)}")
+    print(f"Righe:   {len(df1)}")
+
+    print("\n── Testata (prime 5 righe) ─────────────────────────────────────")
+    print(df1.head().to_string(index=False))
+
     print("\n── describe() ──────────────────────────────────────────────────")
-    print(df.describe())
+    print(df1.describe())
 
     print("\n── Top 5 comuni per popolazione ────────────────────────────────")
-    top5 = df.nlargest(5, "Totale")[["Comune", "Totale maschi", "Totale femmine", "Totale"]]
+    top5 = df1.nlargest(5, "Totale")[["Comune", "Totale maschi", "Totale femmine", "Totale"]]
     print(top5.to_string(index=False))
 
-    print("\n── Analisi: redditi IRPEF ──────────────────────────────────────")
-    key2 = "2025/open-data/Redditi_e_principali_variabili_IRPEF_su_base_comunale_2024.csv"
+    # ── Dataset 2: Redditi IRPEF ─────────────────────────────────────────────
+    print("\n── Dataset 2: Redditi_IRPEF_su_base_comunale_2024.csv ──────────")
+    key2   = "2025/open-data/Redditi_e_principali_variabili_IRPEF_su_base_comunale_2024.csv"
     local2 = "/tmp/irpef_download.csv"
     s3.download_file(BUCKET, key2, local2)
     print(f"[DOWNLOAD] s3://{BUCKET}/{key2} → {local2}")
@@ -75,13 +87,14 @@ def analisi():
     print(f"\nColonne totali: {len(df2.columns)}")
     print(f"Righe:          {len(df2)}")
 
+    print("\n── Testata (prime 3 righe, prime 6 colonne) ────────────────────")
+    print(df2.iloc[:3, :6].to_string(index=False))
+
     col_reddito = "Reddito complessivo - Ammontare in euro"
     col_comune  = "Denominazione Comune"
     col_contrib = "Numero contribuenti"
-    top5_irpef = (
-        df2.nlargest(5, col_reddito)[[col_comune, col_contrib, col_reddito]]
-    )
     print("\n── Top 5 comuni per reddito complessivo ────────────────────────")
+    top5_irpef = df2.nlargest(5, col_reddito)[[col_comune, col_contrib, col_reddito]]
     print(top5_irpef.to_string(index=False))
 
 # ── Main ────────────────────────────────────────────────────────────────────
@@ -94,4 +107,3 @@ if __name__ == "__main__":
     lista_oggetti()
     analisi()
     print("\n[DONE] Script completato con successo.")
-EOF
