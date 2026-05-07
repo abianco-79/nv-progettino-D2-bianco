@@ -29,8 +29,6 @@ docker compose run --rm client python src/upload.py
 echo "[5/5] Eseguo estensioni opzionali..."
 echo "  → Versioning..."
 docker compose run --rm client python src/versioning.py
-echo "  → Policy read-only..."
-docker compose run --rm client python src/policy.py
 
 echo ""
 echo "✓ Setup completato!"
