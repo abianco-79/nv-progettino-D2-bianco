@@ -35,8 +35,10 @@ def crea_bucket():
 def upload_datasets():
     for path in DATASETS:
         key = "2025/open-data/" + os.path.basename(path)
-        s3.upload_file(path, BUCKET, key)
-        print(f"[UPLOAD] {path} → s3://{BUCKET}/{key}")
+        with open(path, "rb") as f:
+            risposta = s3.put_object(Bucket=BUCKET, Key=key, Body=f)
+        status = risposta["ResponseMetadata"]["HTTPStatusCode"]
+        print(f"[UPLOAD] {path} → s3://{BUCKET}/{key}  [HTTP {status}]")
 
 # ── 3. Lista oggetti con metadati ───────────────────────────────────────────
 def lista_oggetti():
@@ -44,7 +46,6 @@ def lista_oggetti():
     risposta = s3.list_objects_v2(Bucket=BUCKET)
     for obj in risposta.get("Contents", []):
         size_kb = obj["Size"] / 1024
-        # Metadati dettagliati tramite head_object
         head = s3.head_object(Bucket=BUCKET, Key=obj["Key"])
         print(f"  KEY:           {obj['Key']}")
         print(f"  size:          {size_kb:.1f} KB")
@@ -55,9 +56,8 @@ def lista_oggetti():
 
 # ── 4. Download, testata e analisi ──────────────────────────────────────────
 def analisi():
-    # ── Dataset 1: Popolazione comuni ───────────────────────────────────────
     print("\n── Dataset 1: POSAS_it_Comuni.csv ──────────────────────────────")
-    key1  = "2025/open-data/POSAS_it_Comuni.csv"
+    key1   = "2025/open-data/POSAS_it_Comuni.csv"
     local1 = "/tmp/comuni_download.csv"
     s3.download_file(BUCKET, key1, local1)
     print(f"[DOWNLOAD] s3://{BUCKET}/{key1} → {local1}")
@@ -76,7 +76,6 @@ def analisi():
     top5 = df1.nlargest(5, "Totale")[["Comune", "Totale maschi", "Totale femmine", "Totale"]]
     print(top5.to_string(index=False))
 
-    # ── Dataset 2: Redditi IRPEF ─────────────────────────────────────────────
     print("\n── Dataset 2: Redditi_IRPEF_su_base_comunale_2024.csv ──────────")
     key2   = "2025/open-data/Redditi_e_principali_variabili_IRPEF_su_base_comunale_2024.csv"
     local2 = "/tmp/irpef_download.csv"
