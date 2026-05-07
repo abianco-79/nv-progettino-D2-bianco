@@ -63,7 +63,9 @@ touch scripts/setup.sh scripts/teardown.sh
 **4.2 Creazione del file `.env`**
 
 Crea manualmente un file `.env` nella root del progetto con questo contenuto:
-
+```
+nano .env
+```
 ```
 MINIO_ROOT_USER=minioadmin
 MINIO_ROOT_PASSWORD=minioadmin123
