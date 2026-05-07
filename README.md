@@ -172,7 +172,7 @@ minio     minio/minio:latest   "/usr/bin/docker-ent…"   minio     25 hours ago
 
 Apertura sul browser di `http://localhost:9001` e login con le credenziali del `.env`. La console mostra inizialmente nessun bucket.
 
-![image-20260506231254352](C:\Users\aless\AppData\Roaming\Typora\typora-user-images\image-20260506231254352.png)
+![image-20260506231254352](screenshots/image-20260506231254352.png)
 
 **4.6 Creazione del file ** **`dockerfile`**
 
@@ -406,7 +406,7 @@ Per i risultati dello script, si rimanda alla sezione **5.2 Output script di upl
 
 Tornando su `http://localhost:9001` → Buckets → `pa-datalake` → `2025/open-data/` → i due CSV sono visibili.
 
-![image-20260506233852841](C:\Users\aless\AppData\Roaming\Typora\typora-user-images\image-20260506233852841.png)
+![image-20260506233852841](screenshots/image-20260506233852841.png)
 
 
 
@@ -532,7 +532,7 @@ abianco@DESKTOP-0UIHB5R:~/nv-progettino-D2-bianco$ docker compose up -d minio
 
 Aprendo `http://localhost:9001` → il bucket e i file sono ancora presenti.
 
-![image-20260506234616588](C:\Users\aless\AppData\Roaming\Typora\typora-user-images\image-20260506234616588.png)
+![image-20260506234616588](screenshots/image-20260506234616588.png)
 
 **5.4 Verifica distruttiva — hard reset**
 
@@ -558,7 +558,7 @@ abianco@DESKTOP-0UIHB5R:~/nv-progettino-D2-bianco$ docker compose down -v
 
 Apremdo`http://localhost:9001` → il bucket è sparito.
 
-![image-20260506234727485](C:\Users\aless\AppData\Roaming\Typora\typora-user-images\image-20260506234727485.png)
+![image-20260506234727485](screenshots/image-20260506234727485.png)
 
 **5.5 Inspect del volume**
 
@@ -588,7 +588,7 @@ abianco@DESKTOP-0UIHB5R:~/nv-progettino-D2-bianco$ docker volume inspect nv-prog
 ]
 ```
 
-Una volta definito `minio-data` nel file Compose, Docker ha creato questo **Volume** per assicurarsi che i file caricati su MinIO non spariscano ogni volta che spegni il container.
+Una volta definito `minio-data` nel file Compose, Docker ha creato questo **Volume** per assicurarsi che i file caricati su MinIO non spariscano ogni volta che si spenga il container.
 
 ##### Il "Mountpoint" (Dove si trovano i dati?)
 
@@ -727,7 +727,7 @@ Pertanto è necessario:
   - Porta esterna `9000` -> Porta interna `9000` del PC.
   - Porta esterna `9001` -> Porta interna `9001` del PC.
 
-![image-20260507184543753](C:\Users\aless\AppData\Roaming\Typora\typora-user-images\image-20260507184543753.png)
+![image-20260507184543753](screenshots/image-20260507184543753.png)
 
 ##### c) Identificare l'IP Pubblico
 
@@ -933,7 +933,7 @@ Container nv-progettino-d2-bianco-client-run-627fa21251c2 Created
 
 Output su console:
 
-![image-20260507175947359](C:\Users\aless\AppData\Roaming\Typora\typora-user-images\image-20260507175947359.png)
+![image-20260507175947359](screenshots/image-20260507175947359.png)
 
 Pertanto, oltre che da terminale, è possibile visionare tutte le "nuove" versioni del file create, dalla sezione "Display Object Versions".
 
