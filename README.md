@@ -174,7 +174,7 @@ Apertura sul browser di `http://localhost:9001` e login con le credenziali del `
 
 ![image-20260506231254352](screenshots/image-20260506231254352.png)
 
-**4.6 Creazione del file ** **`dockerfile`**
+**4.6 Creazione del file** **`dockerfile`**
 
 ```bash
 cat > Dockerfile << 'EOF'
@@ -196,7 +196,7 @@ EOF
 3. Copia il codice e i dataset nel container
 4. Quando parte, esegue lo script Python
 
-**4.7 Creazione del file ** **`upload.py`**
+**4.7 Creazione del file** **`upload.py`**
 
 ```python
 cat > src/upload.py << 'EOF'
